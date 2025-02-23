@@ -1,11 +1,13 @@
 package models
 
+import "gorm.io/gorm"
+
 type Usuario struct {
-	Nome      string
-	Sobrenome string
-	Email     string
-	Senha     string
-	Orcamento []Orcamento
-	Transacao []Transacao
-	Categoria []Categoria
+	gorm.Model
+	Nome       string      `gorm:"not null"`
+	Sobrenome  string      `gorm:"not null"`
+	Email      string      `gorm:"not null;unique"`
+	Senha      string      `gorm:"not null"`
+	Orcamentos []Orcamento `gorm:"foreignKey:UsuarioID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Transacoes []Transacao `gorm:"foreignKey:UsuarioID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
