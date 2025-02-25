@@ -3,22 +3,25 @@ package main
 import (
 	"log"
 
+	"github.com/gui-costads/carteira-app/internal/config"
 	"github.com/gui-costads/carteira-app/internal/models"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 func main() {
-	dsn := "host=localhost user=postgres password=postgres dbname=carteira port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := config.DatabaseConnection()
 	if err != nil {
-		log.Fatalf("Error connecting to database: %v", err)
+		log.Fatal("Falha ao conectar ao banco de dados: %v", err)
 	}
 
-	err = db.AutoMigrate(&models.Usuario{}, &models.Categoria{}, &models.Transacao{}, &models.Orcamento{})
+	err = db.AutoMigrate(
+		&models.Usuario{},
+		&models.Orcamento{},
+		&models.Categoria{},
+		&models.Orcamento{},
+	)
 	if err != nil {
-		log.Fatalf("Error migrating models: %v", err)
+		log.Fatal("Falha ao gerar modelos: %v", err)
 	}
+	log.Println("Modelos gerados com sucesso")
 
 }
