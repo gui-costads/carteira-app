@@ -1,8 +1,13 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Transacao struct {
+	gorm.Model
 	Descricao       string    `gorm:"type:text"`
 	Valor           float64   `gorm:"type:decimal(10,2);not null; check:valor >= 0"`
 	Data            time.Time `gorm:"not null"`
