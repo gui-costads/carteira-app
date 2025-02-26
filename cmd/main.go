@@ -10,7 +10,7 @@ import (
 func main() {
 	db, err := config.DatabaseConnection()
 	if err != nil {
-		log.Fatal("Falha ao conectar ao banco de dados: %v", err)
+		log.Fatalf("Falha ao conectar ao banco de dados: %v", err)
 	}
 
 	err = db.AutoMigrate(
@@ -20,7 +20,7 @@ func main() {
 		&models.Orcamento{},
 	)
 	if err != nil {
-		log.Fatal("Falha ao gerar modelos: %v", err)
+		log.Fatalf("Falha ao gerar modelos: %v", err)
 	}
 	log.Println("Modelos gerados com sucesso")
 
