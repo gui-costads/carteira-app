@@ -7,6 +7,7 @@ import (
 	"github.com/gui-costads/carteira-app/internal/data/usuariodto"
 	"github.com/gui-costads/carteira-app/internal/models"
 	"github.com/gui-costads/carteira-app/internal/repository/usuariorepository"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -27,11 +28,13 @@ func (usarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUs
 		return usuariodto.UsuarioResponse{}, err
 	}
 
+	hashSenha, _ := encriptarSenhar(request.Senha)
+
 	usuarioModel := models.Usuario{
 		Nome:      request.Nome,
 		Sobrenome: request.Sobrenome,
 		Email:     request.Email,
-		Senha:     request.Senha,
+		Senha:     hashSenha,
 	}
 
 	usuarioModel, err := usarioService.usuarioRepo.Criar(usuarioModel)
@@ -126,4 +129,14 @@ func (usarioService *UsuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.Usu
 	}
 
 	return usuariosResponse, nil
+}
+
+func encriptarSenhar(senha string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(senha), 14)
+	return string(bytes), err
+}
+
+func verificarSenha(senha, hashSenha string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashSenha), []byte(senha))
+	return err == nil
 }
