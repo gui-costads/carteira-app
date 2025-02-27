@@ -23,8 +23,8 @@ func NewUsuarioService(usuarioRepo usuariorepository.UsuarioRepository) *Usuario
 	}
 }
 
-func (usarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
-	if err := usarioService.validate.Struct(request); err != nil {
+func (usuarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
+	if err := usuarioService.validate.Struct(request); err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
 
@@ -37,7 +37,7 @@ func (usarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUs
 		Senha:     hashSenha,
 	}
 
-	usuarioModel, err := usarioService.usuarioRepo.Criar(usuarioModel)
+	usuarioModel, err := usuarioService.usuarioRepo.Criar(usuarioModel)
 	if err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
@@ -51,8 +51,8 @@ func (usarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUs
 	return usuarioResponse, nil
 }
 
-func (usarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioRequest usuariodto.AtualizarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
-	usuario, err := usarioService.usuarioRepo.BuscarPorID(id)
+func (usuarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioRequest usuariodto.AtualizarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
+	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return usuariodto.UsuarioResponse{}, errors.New("usuario not found")
@@ -60,7 +60,7 @@ func (usarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioReques
 		return usuariodto.UsuarioResponse{}, err
 	}
 
-	if err := usarioService.validate.Struct(usuarioRequest); err != nil {
+	if err := usuarioService.validate.Struct(usuarioRequest); err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
 
@@ -71,10 +71,10 @@ func (usarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioReques
 		usuario.Sobrenome = usuarioRequest.Sobrenome
 	}
 	if usuarioRequest.Senha != "" {
-		usuario.Senha = usuarioRequest.Senha // You might want to hash the password here
+		usuario.Senha = usuarioRequest.Senha
 	}
 
-	usuario, err = usarioService.usuarioRepo.Atualizar(usuario)
+	usuario, err = usuarioService.usuarioRepo.Atualizar(usuario)
 	if err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
@@ -88,18 +88,18 @@ func (usarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioReques
 	return usuarioResponse, nil
 }
 
-func (usarioService *UsuarioServiceImpl) DeletarUsuario(id uint) error {
-	usuario, err := usarioService.usuarioRepo.BuscarPorID(id)
+func (usuarioService *UsuarioServiceImpl) DeletarUsuario(id uint) error {
+	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 	if err != nil {
 		return err
 	}
 
-	usarioService.usuarioRepo.Deletar(usuario)
+	usuarioService.usuarioRepo.Deletar(usuario)
 	return nil
 }
 
-func (usarioService *UsuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodto.UsuarioResponse, error) {
-	usuario, err := usarioService.usuarioRepo.BuscarPorID(id)
+func (usuarioService *UsuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodto.UsuarioResponse, error) {
+	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 	if err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
