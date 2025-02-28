@@ -28,7 +28,7 @@ func (usuarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarU
 		return usuariodto.UsuarioResponse{}, err
 	}
 
-	hashSenha, _ := encriptarSenhar(request.Senha)
+	hashSenha, _ := encriptarSenha(request.Senha)
 
 	usuarioModel := models.Usuario{
 		Nome:      request.Nome,
@@ -53,6 +53,10 @@ func (usuarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarU
 
 func (usuarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioRequest usuariodto.AtualizarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
 	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
+
+	if err := usuarioService.validate.Struct(usuarioRequest); err != nil {
+		return usuariodto.UsuarioResponse{}, err
+	}
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return usuariodto.UsuarioResponse{}, errors.New("usuario not found")
@@ -71,7 +75,8 @@ func (usuarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioReque
 		usuario.Sobrenome = usuarioRequest.Sobrenome
 	}
 	if usuarioRequest.Senha != "" {
-		usuario.Senha = usuarioRequest.Senha
+		hashSenha, _ := encriptarSenha(usuarioRequest.Senha)
+		usuario.Senha = hashSenha
 	}
 
 	usuario, err = usuarioService.usuarioRepo.Atualizar(usuario)
@@ -115,7 +120,11 @@ func (usuarioService *UsuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodt
 }
 
 func (usarioService *UsuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.UsuarioResponse, error) {
-	usuarios := usarioService.usuarioRepo.BuscarTodos()
+	usuarios, err := usarioService.usuarioRepo.BuscarTodos()
+
+	if err != nil {
+		return nil, err
+	}
 
 	var usuariosResponse []usuariodto.UsuarioResponse
 	for _, usuario := range usuarios {
@@ -131,7 +140,7 @@ func (usarioService *UsuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.Usu
 	return usuariosResponse, nil
 }
 
-func encriptarSenhar(senha string) (string, error) {
+func encriptarSenha(senha string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(senha), 14)
 	return string(bytes), err
 }

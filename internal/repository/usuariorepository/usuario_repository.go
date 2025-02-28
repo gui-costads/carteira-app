@@ -7,7 +7,7 @@ import (
 type UsuarioRepository interface {
 	Criar(usuario models.Usuario) (models.Usuario, error)
 	Atualizar(usuario models.Usuario) (models.Usuario, error)
-	Deletar(usuario models.Usuario)
+	Deletar(usuario models.Usuario) error
 	BuscarPorID(id uint) (usuario models.Usuario, err error)
-	BuscarTodos() []models.Usuario
+	BuscarTodos() ([]models.Usuario, error)
 }

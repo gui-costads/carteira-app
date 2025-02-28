@@ -3,6 +3,8 @@ package usuariorepository
 import (
 	"errors"
 
+	"fmt"
+
 	"github.com/gui-costads/carteira-app/internal/models"
 	"gorm.io/gorm"
 )
@@ -42,7 +44,7 @@ func (repo *UsuarioRepositoryImpl) BuscarPorID(id uint) (models.Usuario, error) 
 	var usuario models.Usuario
 	if err := repo.Db.First(&usuario, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return usuario, nil
+			return usuario, fmt.Errorf("usuário com ID %d não encontrado", id)
 		}
 		return usuario, err
 	}
