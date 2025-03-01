@@ -44,7 +44,7 @@ func (controller *UsuarioController) BuscarPorId(ctx *gin.Context) {
 	usuarioId := ctx.Param("id")
 	id, err := strconv.Atoi(usuarioId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"erro": "ID inválido"})
 		return
 	}
 	uid := uint(id)
@@ -80,8 +80,8 @@ func (controller *UsuarioController) CriarUsuario(ctx *gin.Context) {
 		return
 	}
 	res := response.Response{
-		Code:   200,
-		Status: "OK",
+		Code:   201,
+		Status: "Created",
 		Data:   data,
 	}
 	ctx.JSON(http.StatusOK, res)
@@ -103,8 +103,8 @@ func (controller *UsuarioController) AtualizarUsuario(ctx *gin.Context) {
 	data, err := controller.usuarioservice.AtualizarUsuario(uid, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, response.ErrorResponse{
-			Code:    500,
-			Message: err.Error(),
+			Code:    400,
+			Message: "Dados inválidos",
 		})
 		return
 	}
@@ -122,7 +122,7 @@ func (controller *UsuarioController) DeletarUsuario(ctx *gin.Context) {
 	usuarioId := ctx.Param("id")
 	id, err := strconv.Atoi(usuarioId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"erro": "ID inválido"})
 		return
 	}
 	uid := uint(id)
