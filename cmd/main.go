@@ -8,8 +8,10 @@ import (
 	"github.com/gui-costads/carteira-app/internal/config"
 	"github.com/gui-costads/carteira-app/internal/controller"
 	"github.com/gui-costads/carteira-app/internal/models"
+	"github.com/gui-costads/carteira-app/internal/repository/orcamentorepository"
 	"github.com/gui-costads/carteira-app/internal/repository/usuariorepository"
 	"github.com/gui-costads/carteira-app/internal/routes"
+	orcamentoservice "github.com/gui-costads/carteira-app/internal/service/orcamento"
 	usuarioservice "github.com/gui-costads/carteira-app/internal/service/usuario"
 )
 
@@ -34,12 +36,17 @@ func main() {
 	usuarioService := usuarioservice.NewUsuarioService(usuarioRepo)
 	usuarioController := controller.NewUsuarioController(usuarioService)
 
+	orcamentoRepo := orcamentorepository.NewUsuarioRepositoryImpl(db)
+	orcamentoService := orcamentoservice.NewOrcamentoService(orcamentoRepo)
+	orcamentoController := controller.NewOrcamentoController(orcamentoService)
+
 	router := gin.Default()
 
 	api := router.Group("/api/v1")
 
 	{
 		routes.SetupUsuarioRoutes(api, usuarioController)
+		routes.SetupOrcamentoRoutes(api, orcamentoController)
 	}
 	log.Println("🚀 Servidor iniciado na porta 8080")
 	if err := router.Run(":8080"); err != nil {
