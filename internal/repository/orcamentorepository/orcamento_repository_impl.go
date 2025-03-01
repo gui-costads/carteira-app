@@ -8,38 +8,38 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrcamentoRepositoryImpl struct {
-	Db *gorm.DB
+type orcamentoRepositoryImpl struct {
+	db *gorm.DB
 }
 
-func NewUsuarioRepositoryImpl(db *gorm.DB) *OrcamentoRepositoryImpl {
-	return &OrcamentoRepositoryImpl{Db: db}
+func NewUsuarioRepository(db *gorm.DB) OrcamentoRepository {
+	return &orcamentoRepositoryImpl{db: db}
 }
 
-func (repo *OrcamentoRepositoryImpl) Criar(orcamento models.Orcamento) (models.Orcamento, error) {
-	if err := repo.Db.Create(&orcamento).Error; err != nil {
+func (repo *orcamentoRepositoryImpl) Criar(orcamento models.Orcamento) (models.Orcamento, error) {
+	if err := repo.db.Create(&orcamento).Error; err != nil {
 		return models.Orcamento{}, err
 	}
 	return orcamento, nil
 }
 
-func (repo *OrcamentoRepositoryImpl) Atualizar(orcamento models.Orcamento) (models.Orcamento, error) {
-	if err := repo.Db.Save(&orcamento).Error; err != nil {
+func (repo *orcamentoRepositoryImpl) Atualizar(orcamento models.Orcamento) (models.Orcamento, error) {
+	if err := repo.db.Save(&orcamento).Error; err != nil {
 		return models.Orcamento{}, err
 	}
 	return orcamento, nil
 }
 
-func (repo *OrcamentoRepositoryImpl) Deletar(orcamento models.Orcamento) error {
-	if err := repo.Db.Delete(&orcamento).Error; err != nil {
+func (repo *orcamentoRepositoryImpl) Deletar(orcamento models.Orcamento) error {
+	if err := repo.db.Delete(&orcamento).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *OrcamentoRepositoryImpl) BuscarPorID(id uint) (models.Orcamento, error) {
+func (repo *orcamentoRepositoryImpl) BuscarPorID(id uint) (models.Orcamento, error) {
 	var orcamento models.Orcamento
-	if err := repo.Db.First(&orcamento, id).Error; err != nil {
+	if err := repo.db.First(&orcamento, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return orcamento, fmt.Errorf("orcamento com ID %d não encontrado", id)
 		}
@@ -48,9 +48,9 @@ func (repo *OrcamentoRepositoryImpl) BuscarPorID(id uint) (models.Orcamento, err
 	return orcamento, nil
 }
 
-func (repo *OrcamentoRepositoryImpl) BuscarTodos() ([]models.Orcamento, error) {
+func (repo *orcamentoRepositoryImpl) BuscarTodos() ([]models.Orcamento, error) {
 	var orcamentos []models.Orcamento
-	if err := repo.Db.Find(&orcamentos).Error; err != nil {
+	if err := repo.db.Find(&orcamentos).Error; err != nil {
 		return nil, err
 	}
 	return orcamentos, nil

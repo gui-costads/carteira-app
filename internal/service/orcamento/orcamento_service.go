@@ -2,7 +2,7 @@ package orcamentoservice
 
 import "github.com/gui-costads/carteira-app/internal/data/orcamentodto"
 
-type ServiceOrcamento interface {
+type OrcamentoService interface {
 	CriarOrcamento(orcament orcamentodto.CriarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error)
 	AtualizarOrcamento(id uint, orcamentodto orcamentodto.AtualizarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error)
 	DeletarOrcamento(id uint) error

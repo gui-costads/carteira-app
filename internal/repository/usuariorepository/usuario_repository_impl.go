@@ -9,40 +9,40 @@ import (
 	"gorm.io/gorm"
 )
 
-type UsuarioRepositoryImpl struct {
-	Db *gorm.DB
+type usuarioRepositoryImpl struct {
+	db *gorm.DB
 }
 
-func NewUsuarioRepositoryImpl(db *gorm.DB) *UsuarioRepositoryImpl {
-	return &UsuarioRepositoryImpl{
-		Db: db,
+func NewUsuarioRepository(db *gorm.DB) UsuarioRepository {
+	return &usuarioRepositoryImpl{
+		db: db,
 	}
 }
 
-func (repo *UsuarioRepositoryImpl) Criar(usuario models.Usuario) (models.Usuario, error) {
-	if err := repo.Db.Create(&usuario).Error; err != nil {
+func (repo *usuarioRepositoryImpl) Criar(usuario models.Usuario) (models.Usuario, error) {
+	if err := repo.db.Create(&usuario).Error; err != nil {
 		return models.Usuario{}, err
 	}
 	return usuario, nil
 }
 
-func (repo *UsuarioRepositoryImpl) Atualizar(usuario models.Usuario) (models.Usuario, error) {
-	if err := repo.Db.Save(&usuario).Error; err != nil {
+func (repo *usuarioRepositoryImpl) Atualizar(usuario models.Usuario) (models.Usuario, error) {
+	if err := repo.db.Save(&usuario).Error; err != nil {
 		return models.Usuario{}, err
 	}
 	return usuario, nil
 }
 
-func (repo *UsuarioRepositoryImpl) Deletar(usuario models.Usuario) error {
-	if err := repo.Db.Delete(&usuario).Error; err != nil {
+func (repo *usuarioRepositoryImpl) Deletar(usuario models.Usuario) error {
+	if err := repo.db.Delete(&usuario).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *UsuarioRepositoryImpl) BuscarPorID(id uint) (models.Usuario, error) {
+func (repo *usuarioRepositoryImpl) BuscarPorID(id uint) (models.Usuario, error) {
 	var usuario models.Usuario
-	if err := repo.Db.First(&usuario, id).Error; err != nil {
+	if err := repo.db.First(&usuario, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return usuario, fmt.Errorf("usuário com ID %d não encontrado", id)
 		}
@@ -51,9 +51,9 @@ func (repo *UsuarioRepositoryImpl) BuscarPorID(id uint) (models.Usuario, error) 
 	return usuario, nil
 }
 
-func (repo *UsuarioRepositoryImpl) BuscarTodos() ([]models.Usuario, error) {
+func (repo *usuarioRepositoryImpl) BuscarTodos() ([]models.Usuario, error) {
 	var usuarios []models.Usuario
-	if err := repo.Db.Find(&usuarios).Error; err != nil {
+	if err := repo.db.Find(&usuarios).Error; err != nil {
 		return nil, err
 	}
 	return usuarios, nil

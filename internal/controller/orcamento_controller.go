@@ -12,10 +12,10 @@ import (
 )
 
 type OrcamentoController struct {
-	orcamentoservice orcamentoservice.ServiceOrcamento
+	orcamentoservice orcamentoservice.OrcamentoService
 }
 
-func NewOrcamentoController(orcamentoService orcamentoservice.ServiceOrcamento) *OrcamentoController {
+func NewOrcamentoController(orcamentoService orcamentoservice.OrcamentoService) *OrcamentoController {
 	return &OrcamentoController{orcamentoservice: orcamentoService}
 }
 

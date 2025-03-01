@@ -10,19 +10,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrcamentoServiceImpl struct {
+type orcamentoServiceImpl struct {
 	orcamentoRepo orcamentorepository.OrcamentoRepository
 	validate      *validator.Validate
 }
 
-func NewOrcamentoService(orcamentoRepo orcamentorepository.OrcamentoRepository) *OrcamentoServiceImpl {
-	return &OrcamentoServiceImpl{
+func NewOrcamentoService(orcamentoRepo orcamentorepository.OrcamentoRepository) OrcamentoService {
+	return &orcamentoServiceImpl{
 		orcamentoRepo: orcamentoRepo,
 		validate:      validator.New(),
 	}
 }
 
-func (orcamentoService *OrcamentoServiceImpl) CriarOrcamento(request orcamentodto.CriarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error) {
+func (orcamentoService *orcamentoServiceImpl) CriarOrcamento(request orcamentodto.CriarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error) {
 	if err := orcamentoService.validate.Struct(request); err != nil {
 		return orcamentodto.ResponseOrcamento{}, err
 	}
@@ -53,7 +53,7 @@ func (orcamentoService *OrcamentoServiceImpl) CriarOrcamento(request orcamentodt
 	return orcamentoResponse, nil
 }
 
-func (orcamentoService *OrcamentoServiceImpl) AtualizarOrcamento(id uint, request orcamentodto.AtualizarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error) {
+func (orcamentoService *orcamentoServiceImpl) AtualizarOrcamento(id uint, request orcamentodto.AtualizarOrcamentoRequest) (orcamentodto.ResponseOrcamento, error) {
 	orcamento, err := orcamentoService.orcamentoRepo.BuscarPorID(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -95,7 +95,7 @@ func (orcamentoService *OrcamentoServiceImpl) AtualizarOrcamento(id uint, reques
 	return orcamentoResponse, nil
 }
 
-func (orcamentoService *OrcamentoServiceImpl) DeletarOrcamento(id uint) error {
+func (orcamentoService *orcamentoServiceImpl) DeletarOrcamento(id uint) error {
 	orcamento, err := orcamentoService.orcamentoRepo.BuscarPorID(id)
 	if err != nil {
 		return err
@@ -105,7 +105,7 @@ func (orcamentoService *OrcamentoServiceImpl) DeletarOrcamento(id uint) error {
 	return nil
 }
 
-func (orcamentoService *OrcamentoServiceImpl) BuscarOrcamentoPorID(id uint) (orcamentodto.ResponseOrcamento, error) {
+func (orcamentoService *orcamentoServiceImpl) BuscarOrcamentoPorID(id uint) (orcamentodto.ResponseOrcamento, error) {
 	orcamento, err := orcamentoService.orcamentoRepo.BuscarPorID(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -123,7 +123,7 @@ func (orcamentoService *OrcamentoServiceImpl) BuscarOrcamentoPorID(id uint) (orc
 	}, nil
 }
 
-func (orcamentoService *OrcamentoServiceImpl) BuscarTodosOrcamentos() ([]orcamentodto.ResponseOrcamento, error) {
+func (orcamentoService *orcamentoServiceImpl) BuscarTodosOrcamentos() ([]orcamentodto.ResponseOrcamento, error) {
 	orcamentos, err := orcamentoService.orcamentoRepo.BuscarTodos()
 	if err != nil {
 		return nil, err

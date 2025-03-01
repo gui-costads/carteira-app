@@ -32,11 +32,11 @@ func main() {
 	}
 	log.Println("Modelos gerados com sucesso")
 
-	usuarioRepo := usuariorepository.NewUsuarioRepositoryImpl(db)
+	usuarioRepo := usuariorepository.NewUsuarioRepository(db)
 	usuarioService := usuarioservice.NewUsuarioService(usuarioRepo)
 	usuarioController := controller.NewUsuarioController(usuarioService)
 
-	orcamentoRepo := orcamentorepository.NewUsuarioRepositoryImpl(db)
+	orcamentoRepo := orcamentorepository.NewUsuarioRepository(db)
 	orcamentoService := orcamentoservice.NewOrcamentoService(orcamentoRepo)
 	orcamentoController := controller.NewOrcamentoController(orcamentoService)
 

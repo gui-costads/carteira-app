@@ -11,19 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type UsuarioServiceImpl struct {
+type usuarioServiceImpl struct {
 	usuarioRepo usuariorepository.UsuarioRepository
 	validate    *validator.Validate
 }
 
-func NewUsuarioService(usuarioRepo usuariorepository.UsuarioRepository) *UsuarioServiceImpl {
-	return &UsuarioServiceImpl{
+func NewUsuarioService(usuarioRepo usuariorepository.UsuarioRepository) UsuarioService {
+	return &usuarioServiceImpl{
 		usuarioRepo: usuarioRepo,
 		validate:    validator.New(),
 	}
 }
 
-func (usuarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
+func (usuarioService *usuarioServiceImpl) CriarUsuario(request usuariodto.CriarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
 	if err := usuarioService.validate.Struct(request); err != nil {
 		return usuariodto.UsuarioResponse{}, err
 	}
@@ -51,7 +51,7 @@ func (usuarioService *UsuarioServiceImpl) CriarUsuario(request usuariodto.CriarU
 	return usuarioResponse, nil
 }
 
-func (usuarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioRequest usuariodto.AtualizarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
+func (usuarioService *usuarioServiceImpl) AtualizarUsuario(id uint, usuarioRequest usuariodto.AtualizarUsuarioRequest) (usuariodto.UsuarioResponse, error) {
 	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 
 	if err := usuarioService.validate.Struct(usuarioRequest); err != nil {
@@ -93,7 +93,7 @@ func (usuarioService *UsuarioServiceImpl) AtualizarUsuario(id uint, usuarioReque
 	return usuarioResponse, nil
 }
 
-func (usuarioService *UsuarioServiceImpl) DeletarUsuario(id uint) error {
+func (usuarioService *usuarioServiceImpl) DeletarUsuario(id uint) error {
 	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (usuarioService *UsuarioServiceImpl) DeletarUsuario(id uint) error {
 	return nil
 }
 
-func (usuarioService *UsuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodto.UsuarioResponse, error) {
+func (usuarioService *usuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodto.UsuarioResponse, error) {
 	usuario, err := usuarioService.usuarioRepo.BuscarPorID(id)
 	if err != nil {
 		return usuariodto.UsuarioResponse{}, err
@@ -119,7 +119,7 @@ func (usuarioService *UsuarioServiceImpl) BuscarUsuarioPorID(id uint) (usuariodt
 	return usuarioResponse, nil
 }
 
-func (usarioService *UsuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.UsuarioResponse, error) {
+func (usarioService *usuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.UsuarioResponse, error) {
 	usuarios, err := usarioService.usuarioRepo.BuscarTodos()
 
 	if err != nil {
