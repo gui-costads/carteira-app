@@ -10,10 +10,12 @@ import (
 	"github.com/gui-costads/carteira-app/internal/models"
 	"github.com/gui-costads/carteira-app/internal/repository/categoriarepository"
 	"github.com/gui-costads/carteira-app/internal/repository/orcamentorepository"
+	"github.com/gui-costads/carteira-app/internal/repository/transacaorepository"
 	"github.com/gui-costads/carteira-app/internal/repository/usuariorepository"
 	"github.com/gui-costads/carteira-app/internal/routes"
 	categoriaservice "github.com/gui-costads/carteira-app/internal/service/categoria"
 	orcamentoservice "github.com/gui-costads/carteira-app/internal/service/orcamento"
+	transacaoservice "github.com/gui-costads/carteira-app/internal/service/transacao"
 	usuarioservice "github.com/gui-costads/carteira-app/internal/service/usuario"
 )
 
@@ -46,6 +48,10 @@ func main() {
 	categoriaService := categoriaservice.NewCategoriaService(categoriaRepo)
 	categoriaController := controller.NewCategoriaController(categoriaService)
 
+	transacaoRepo := transacaorepository.NewTransacaoRepository(db)
+	transacaoService := transacaoservice.NewTransacaoService(transacaoRepo)
+	transacaoController := controller.NewTransacaoController(transacaoService)
+
 	router := gin.Default()
 
 	api := router.Group("/api/v1")
@@ -54,6 +60,7 @@ func main() {
 		routes.SetupUsuarioRoutes(api, usuarioController)
 		routes.SetupOrcamentoRoutes(api, orcamentoController)
 		routes.SetupCategoriaRoutes(api, categoriaController)
+		routes.SetupTransacaoRoutes(api, transacaoController)
 	}
 	log.Println("🚀 Servidor iniciado na porta 8080")
 	if err := router.Run(":8080"); err != nil {
