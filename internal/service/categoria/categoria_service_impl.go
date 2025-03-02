@@ -15,7 +15,7 @@ type categoriaServiceImpl struct {
 	validate            *validator.Validate
 }
 
-func NewCategoriaServiceImpl(categoriaRepository categoriarepository.CategoriaRepository) CategoriaService {
+func NewCategoriaService(categoriaRepository categoriarepository.CategoriaRepository) CategoriaService {
 	return &categoriaServiceImpl{
 		categoriaRepository: categoriaRepository,
 		validate:            validator.New(),
