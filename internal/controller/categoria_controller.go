@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -65,6 +66,7 @@ func (controller *CategoriaController) BuscarPorID(ctx *gin.Context) {
 
 func (controller *CategoriaController) CriarCategoria(ctx *gin.Context) {
 	req := categoriadto.CriarCategoriaRequest{}
+	fmt.Print(req)
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, response.ErrorResponse{

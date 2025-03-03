@@ -5,7 +5,7 @@ type ResponseTransacao struct {
 	Descricao       string  `json:"descricao"`
 	Valor           float64 `json:"valor"`
 	Data            string  `json:"data"`
-	TipoDeTransacao string  `json:"tipo_de_transacao"`
-	UsuarioID       uint    `json:"usuario_id"`
-	CategoriaID     uint    `json:"categoria_id"`
+	TipoDeTransacao string  `json:"tipoDeTransacao"`
+	UsuarioID       uint    `json:"usuarioID"`
+	CategoriaID     uint    `json:"categoriaID"`
 }
