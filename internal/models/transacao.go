@@ -15,5 +15,5 @@ type Transacao struct {
 	UsuarioID       uint      `gorm:"not null"`
 	Usuario         Usuario   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CategoriaID     uint      `gorm:"not null"`
-	Categoria       Categoria `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Categoria       Categoria `gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
 }
