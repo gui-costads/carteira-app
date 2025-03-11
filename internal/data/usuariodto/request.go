@@ -12,3 +12,8 @@ type AtualizarUsuarioRequest struct {
 	Sobrenome string `json:"sobrenome" validate:"omitempty,min=3,max=100"`
 	Senha     string `json:"senha" validate:"omitempty,min=6,max=100"`
 }
+
+type LoginRequest struct {
+	Email string `json:"email" validate:"required,email"`
+	Senha string `json:"senha" validate:"required,min=6,max=100"`
+}

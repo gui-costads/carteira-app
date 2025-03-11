@@ -58,3 +58,14 @@ func (repo *usuarioRepositoryImpl) BuscarTodos() ([]models.Usuario, error) {
 	}
 	return usuarios, nil
 }
+
+func (repo *usuarioRepositoryImpl) BuscarPorEmail(email string) (models.Usuario, error) {
+	var usuario models.Usuario
+	if err := repo.db.Where("email = ?", email).First(&usuario).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return usuario, fmt.Errorf("usuário com email %s não encontrado", email)
+		}
+		return usuario, err
+	}
+	return usuario, nil
+}

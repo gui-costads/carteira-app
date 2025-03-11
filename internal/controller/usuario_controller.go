@@ -9,15 +9,58 @@ import (
 
 	usuarioservice "github.com/gui-costads/carteira-app/internal/service/usuario"
 
+	"github.com/gui-costads/carteira-app/internal/auth"
 	"github.com/gui-costads/carteira-app/internal/data/usuariodto"
 )
 
 type UsuarioController struct {
 	usuarioservice usuarioservice.UsuarioService
+	authService    *auth.AuthService
 }
 
-func NewUsuarioController(usuarioService usuarioservice.UsuarioService) *UsuarioController {
-	return &UsuarioController{usuarioservice: usuarioService}
+func NewUsuarioController(usuarioService usuarioservice.UsuarioService, authService *auth.AuthService) *UsuarioController {
+	return &UsuarioController{
+		usuarioservice: usuarioService,
+		authService:    authService,
+	}
+}
+
+func (controller *UsuarioController) Login(ctx *gin.Context) {
+	req := usuariodto.LoginRequest{}
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, response.ErrorResponse{
+			Code:    400,
+			Message: "Dados inválidos",
+		})
+		return
+	}
+
+	usuario, err := controller.usuarioservice.AutenticarUsuario(req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.ErrorResponse{
+			Code:    401,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	tokenString, err := controller.authService.GenerateToken(usuario.ID, usuario.Nome)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.ErrorResponse{
+			Code:    500,
+			Message: "Erro ao gerar token de acesso",
+		})
+		return
+	}
+	res := response.Response{
+		Code:   200,
+		Status: "OK",
+		Data:   gin.H{"token": tokenString, "usuario": usuario},
+	}
+
+	ctx.JSON(http.StatusOK, res)
+
 }
 
 func (controller *UsuarioController) BuscarTodosUsuarios(ctx *gin.Context) {

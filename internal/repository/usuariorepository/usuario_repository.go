@@ -10,4 +10,5 @@ type UsuarioRepository interface {
 	Deletar(usuario models.Usuario) error
 	BuscarPorID(id uint) (usuario models.Usuario, err error)
 	BuscarTodos() ([]models.Usuario, error)
+	BuscarPorEmail(email string) (usuario models.Usuario, err error)
 }

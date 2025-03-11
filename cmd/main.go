@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/gui-costads/carteira-app/internal/auth"
 	"github.com/gui-costads/carteira-app/internal/config"
 	"github.com/gui-costads/carteira-app/internal/controller"
 	"github.com/gui-costads/carteira-app/internal/models"
@@ -20,14 +21,16 @@ import (
 )
 
 func main() {
-	db, err := config.DatabaseConnection()
+	cfg := config.Load()
+	db, err := cfg.DatabaseConnection()
+	authService := auth.NewAuthService(cfg)
 	if err != nil {
 		log.Fatalf("Falha ao conectar ao banco de dados: %v", err)
 	}
 
 	err = db.AutoMigrate(
 		&models.Usuario{},
-		&models.Orcamento{},
+		&models.Transacao{},
 		&models.Categoria{},
 		&models.Orcamento{},
 	)
@@ -38,9 +41,9 @@ func main() {
 
 	usuarioRepo := usuariorepository.NewUsuarioRepository(db)
 	usuarioService := usuarioservice.NewUsuarioService(usuarioRepo)
-	usuarioController := controller.NewUsuarioController(usuarioService)
+	usuarioController := controller.NewUsuarioController(usuarioService, authService)
 
-	orcamentoRepo := orcamentorepository.NewUsuarioRepository(db)
+	orcamentoRepo := orcamentorepository.NewOrcamentoRepository(db)
 	orcamentoService := orcamentoservice.NewOrcamentoService(orcamentoRepo)
 	orcamentoController := controller.NewOrcamentoController(orcamentoService)
 
@@ -57,7 +60,8 @@ func main() {
 	api := router.Group("/api/v1")
 
 	{
-		routes.SetupUsuarioRoutes(api, usuarioController)
+		router.Use(authService.AuthenticationMiddleware())
+		routes.SetupUsuarioRoutes(api, usuarioController, authService)
 		routes.SetupOrcamentoRoutes(api, orcamentoController)
 		routes.SetupCategoriaRoutes(api, categoriaController)
 		routes.SetupTransacaoRoutes(api, transacaoController)

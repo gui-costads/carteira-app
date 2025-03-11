@@ -12,7 +12,7 @@ type orcamentoRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func NewUsuarioRepository(db *gorm.DB) OrcamentoRepository {
+func NewOrcamentoRepository(db *gorm.DB) OrcamentoRepository {
 	return &orcamentoRepositoryImpl{db: db}
 }
 

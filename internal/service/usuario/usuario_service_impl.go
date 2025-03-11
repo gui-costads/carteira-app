@@ -140,6 +140,41 @@ func (usarioService *usuarioServiceImpl) BuscarTodosUsuarios() ([]usuariodto.Usu
 	return usuariosResponse, nil
 }
 
+func (usuarioService *usuarioServiceImpl) BuscarUsuarioPorEmail(email string) (usuariodto.UsuarioResponse, error) {
+	usuario, err := usuarioService.usuarioRepo.BuscarPorEmail(email)
+	if err != nil {
+		return usuariodto.UsuarioResponse{}, err
+	}
+
+	usuarioResponse := usuariodto.UsuarioResponse{
+		ID:        usuario.ID,
+		Nome:      usuario.Nome,
+		Sobrenome: usuario.Sobrenome,
+		Email:     usuario.Email,
+	}
+
+	return usuarioResponse, nil
+}
+
+func (usuarioService *usuarioServiceImpl) AutenticarUsuario(loginRequest usuariodto.LoginRequest) (usuariodto.UsuarioResponse, error) {
+	usuario, err := usuarioService.usuarioRepo.BuscarPorEmail(loginRequest.Email)
+	if err != nil {
+		return usuariodto.UsuarioResponse{}, err
+	}
+
+	if !verificarSenha(loginRequest.Senha, usuario.Senha) {
+		return usuariodto.UsuarioResponse{}, errors.New("senha inválida")
+	}
+
+	usuarioResponse := usuariodto.UsuarioResponse{
+		ID:        usuario.ID,
+		Nome:      usuario.Nome,
+		Sobrenome: usuario.Sobrenome,
+		Email:     usuario.Email,
+	}
+	return usuarioResponse, nil
+}
+
 func encriptarSenha(senha string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(senha), 14)
 	return string(bytes), err

@@ -10,4 +10,6 @@ type UsuarioService interface {
 	DeletarUsuario(id uint) error
 	BuscarUsuarioPorID(id uint) (usuariodto.UsuarioResponse, error)
 	BuscarTodosUsuarios() ([]usuariodto.UsuarioResponse, error)
+	AutenticarUsuario(usuario usuariodto.LoginRequest) (usuariodto.UsuarioResponse, error)
+	BuscarUsuarioPorEmail(email string) (usuariodto.UsuarioResponse, error)
 }
