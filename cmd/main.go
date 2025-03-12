@@ -62,9 +62,9 @@ func main() {
 	{
 		router.Use(authService.AuthenticationMiddleware())
 		routes.SetupUsuarioRoutes(api, usuarioController, authService)
-		routes.SetupOrcamentoRoutes(api, orcamentoController)
-		routes.SetupCategoriaRoutes(api, categoriaController)
-		routes.SetupTransacaoRoutes(api, transacaoController)
+		routes.SetupOrcamentoRoutes(api, orcamentoController, authService)
+		routes.SetupCategoriaRoutes(api, categoriaController, authService)
+		routes.SetupTransacaoRoutes(api, transacaoController, authService)
 	}
 	log.Println("🚀 Servidor iniciado na porta 8080")
 	if err := router.Run(":8080"); err != nil {
