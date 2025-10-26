@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"github.com/gui-costads/carteira-app/internal/auth"
@@ -55,19 +56,37 @@ func main() {
 	transacaoService := transacaoservice.NewTransacaoService(transacaoRepo)
 	transacaoController := controller.NewTransacaoController(transacaoService)
 
-	router := gin.Default()
+	// Configurar CORS
+	configCors := cors.DefaultConfig()
+	configCors.AllowOrigins = []string{"http://localhost:4200", "http://localhost:5173"}
+	configCors.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	configCors.AllowHeaders = []string{"Content-Type", "Authorization"}
 
-	api := router.Group("/api/v1")
+	r := gin.Default()
+	r.Use(cors.New(configCors))
 
+	// Rotas públicas (sem autenticação)
+	public := r.Group("/usuarios")
+	public.POST("/login", usuarioController.Login)
+	public.POST("", usuarioController.CriarUsuario)
+
+	// Rotas privadas (precisam de autenticação)
+	private := r.Group("/usuarios")
+	private.Use(authService.AuthenticationMiddleware())
+
+	private.GET("", usuarioController.BuscarTodosUsuarios)
+	private.GET("/:id", usuarioController.BuscarPorId)
+	private.PUT("/:id", usuarioController.AtualizarUsuario)
+	private.DELETE("/:id", usuarioController.DeletarUsuario)
+
+	api := r.Group("/api/v1")
 	{
-		router.Use(authService.AuthenticationMiddleware())
-		routes.SetupUsuarioRoutes(api, usuarioController, authService)
 		routes.SetupOrcamentoRoutes(api, orcamentoController, authService)
 		routes.SetupCategoriaRoutes(api, categoriaController, authService)
 		routes.SetupTransacaoRoutes(api, transacaoController, authService)
 	}
 	log.Println("🚀 Servidor iniciado na porta 8080")
-	if err := router.Run(":8080"); err != nil {
+	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Falha ao iniciar servidor: %v", err)
 	}
 }

@@ -10,4 +10,5 @@ type OrcamentoRepository interface {
 	Deletar(orcamento models.Orcamento) error
 	BuscarPorID(id uint) (models.Orcamento, error)
 	BuscarTodos() ([]models.Orcamento, error)
+	BuscarPorUsuarioId(id uint) ([]models.Orcamento, error)
 }

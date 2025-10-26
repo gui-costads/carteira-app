@@ -7,19 +7,17 @@ import (
 )
 
 func SetupUsuarioRoutes(router *gin.RouterGroup, usuarioController *controller.UsuarioController, authService *auth.AuthService) {
-	router.POST("/usuarios/login", usuarioController.Login)
-	router.POST("/usuarios", usuarioController.CriarUsuario)
-	{
-		usuarios := router.Group("/usuarios")
+	// Rotas públicas (sem autenticação)
+	public := router.Group("/usuarios")
+	public.POST("/login", usuarioController.Login)
+	public.POST("", usuarioController.CriarUsuario)
 
-		usuarios.Use(authService.AuthenticationMiddleware())
+	// Rotas privadas (precisam de autenticação)
+	private := router.Group("/usuarios")
+	private.Use(authService.AuthenticationMiddleware())
 
-		usuarios.GET("", usuarioController.BuscarTodosUsuarios)
-
-		usuarios.GET("/:id", usuarioController.BuscarPorId)
-
-		usuarios.PUT("/:id", usuarioController.AtualizarUsuario)
-
-		usuarios.DELETE("/:id", usuarioController.DeletarUsuario)
-	}
+	private.GET("", usuarioController.BuscarTodosUsuarios)
+	private.GET("/:id", usuarioController.BuscarPorId)
+	private.PUT("/:id", usuarioController.AtualizarUsuario)
+	private.DELETE("/:id", usuarioController.DeletarUsuario)
 }

@@ -173,3 +173,30 @@ func (controller *OrcamentoController) DeletarOrcamento(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusNoContent, res)
 }
+
+func (controller *OrcamentoController) BuscarOrcamentoPorUsuarioId(ctx *gin.Context) {
+	usuarioID := ctx.Param("id")
+	id, err := strconv.Atoi(usuarioID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"erro": "ID inválido"})
+		return
+	}
+	uid := uint(id)
+
+	data, err := controller.orcamentoservice.BuscarOrcamentoPorUsuarioId(uid)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, response.ErrorResponse{
+			Code:    500,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	res := response.Response{
+		Code:   200,
+		Status: "OK",
+		Data:   data,
+	}
+
+	ctx.JSON(http.StatusOK, res)
+}

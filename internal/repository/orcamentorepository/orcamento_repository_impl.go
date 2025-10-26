@@ -55,3 +55,11 @@ func (repo *orcamentoRepositoryImpl) BuscarTodos() ([]models.Orcamento, error) {
 	}
 	return orcamentos, nil
 }
+
+func (repo *orcamentoRepositoryImpl) BuscarPorUsuarioId(id uint) ([]models.Orcamento, error) {
+	var orcamentos []models.Orcamento
+	if err := repo.db.Where("usuario_id = ?", id).Find(&orcamentos).Error; err != nil {
+		return nil, err
+	}
+	return orcamentos, nil
+}

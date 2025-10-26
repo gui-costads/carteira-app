@@ -8,4 +8,5 @@ type OrcamentoService interface {
 	DeletarOrcamento(id uint) error
 	BuscarOrcamentoPorID(id uint) (orcamentodto.ResponseOrcamento, error)
 	BuscarTodosOrcamentos() ([]orcamentodto.ResponseOrcamento, error)
+	BuscarOrcamentoPorUsuarioId(id uint) ([]orcamentodto.ResponseOrcamento, error)
 }

@@ -20,5 +20,7 @@ func SetupOrcamentoRoutes(router *gin.RouterGroup, orcamentoController *controll
 		orcamentos.PUT("/:id", orcamentoController.AtualizarOrcamento)
 
 		orcamentos.DELETE("/:id", orcamentoController.DeletarOrcamento)
+
+		orcamentos.GET("/usuario/:id", orcamentoController.BuscarOrcamentoPorUsuarioId)
 	}
 }

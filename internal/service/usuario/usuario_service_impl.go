@@ -2,6 +2,7 @@ package usuarioservice
 
 import (
 	"errors"
+	"log"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gui-costads/carteira-app/internal/data/usuariodto"
@@ -157,15 +158,21 @@ func (usuarioService *usuarioServiceImpl) BuscarUsuarioPorEmail(email string) (u
 }
 
 func (usuarioService *usuarioServiceImpl) AutenticarUsuario(loginRequest usuariodto.LoginRequest) (usuariodto.UsuarioResponse, error) {
+	log.Println("Tentativa de autenticação com email:", loginRequest.Email)
 	usuario, err := usuarioService.usuarioRepo.BuscarPorEmail(loginRequest.Email)
 	if err != nil {
-		return usuariodto.UsuarioResponse{}, err
+		log.Println("Erro ao buscar usuário:", err)
+		return usuariodto.UsuarioResponse{}, errors.New("usuário não encontrado")
 	}
 
 	if !verificarSenha(loginRequest.Senha, usuario.Senha) {
+		log.Println(loginRequest.Senha)
+		log.Println(usuario.Senha)
+		log.Println("Senha inválida")
 		return usuariodto.UsuarioResponse{}, errors.New("senha inválida")
 	}
 
+	log.Println("Autenticação bem-sucedida")
 	usuarioResponse := usuariodto.UsuarioResponse{
 		ID:        usuario.ID,
 		Nome:      usuario.Nome,
@@ -183,4 +190,5 @@ func encriptarSenha(senha string) (string, error) {
 func verificarSenha(senha, hashSenha string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashSenha), []byte(senha))
 	return err == nil
+
 }

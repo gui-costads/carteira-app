@@ -143,3 +143,24 @@ func (orcamentoService *orcamentoServiceImpl) BuscarTodosOrcamentos() ([]orcamen
 
 	return response, nil
 }
+
+func (orcamentoService *orcamentoServiceImpl) BuscarOrcamentoPorUsuarioId(id uint) ([]orcamentodto.ResponseOrcamento, error) {
+	orcamentos, err := orcamentoService.orcamentoRepo.BuscarPorUsuarioId(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var response []orcamentodto.ResponseOrcamento
+	for _, o := range orcamentos {
+		response = append(response, orcamentodto.ResponseOrcamento{
+			ID:    o.ID,
+			Saldo: o.Saldo, // Atualiza no repositório
+
+			Periodo:     o.Periodo,
+			UsuarioID:   o.UsuarioID,
+			CategoriaID: o.CategoriaID,
+		})
+	}
+
+	return response, nil
+}
